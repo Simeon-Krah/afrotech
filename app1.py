@@ -161,7 +161,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 final_rag_chain = RunnableWithMessageHistory(
     rag_chain,
     lambda session_id: msgs, 
-    #get_session_history,
+    get_session_history,
     input_messages_key="input",
     history_messages_key="chat_history",
     output_messages_key="answer",
