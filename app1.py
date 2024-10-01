@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 import os
 import bs4
 import streamlit as st
+from langchain_community.vectorstores import FAISS
 
 # data sources
 data_1 = "https://www.who.int/health-topics/mpox#tab=tab_1"     # overview, symptoms, treatment and prevention
@@ -75,12 +76,13 @@ GOOGLE_API_KEY = os.getenv("google_api_key")
 
 # create and store the docs as embeddings
 def store_embeddings(docs_to_embed):
-  vectorstore = Chroma.from_documents(
+
+    vectorstore = FAISS.from_documents(
     documents=docs_to_embed,
-    embedding=GoogleGenerativeAIEmbeddings(google_api_key=GOOGLE_API_KEY, model="models/embedding-001"),
+    embedding=GoogleGenerativeAIEmbeddings(google_api_key="AIzaSyBXYrtvlP9CAin84hPFBN4RrN8rX-b9JUE", model="models/embedding-001"),
   )
 
-  return vectorstore
+    return vectorstore
 
 
 vectorstore = store_embeddings(spliitted_docs)
@@ -98,7 +100,7 @@ retriever = vectorstore.as_retriever(
 
 # set the large language model
 llm = GoogleGenerativeAI(
-    google_api_key=GOOGLE_API_KEY, model="gemini-1.5-flash",
+    google_api_key="AIzaSyBXYrtvlP9CAin84hPFBN4RrN8rX-b9JUE", model="gemini-1.5-flash",
     temperature=0.3
 )
 
