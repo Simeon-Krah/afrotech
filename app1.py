@@ -18,6 +18,9 @@ import os
 import bs4
 import streamlit as st
 from langchain_community.vectorstores import FAISS
+from langchain_community.chat_message_histories import (
+    StreamlitChatMessageHistory,
+)
 
 # data sources
 data_1 = "https://www.who.int/health-topics/mpox#tab=tab_1"     # overview, symptoms, treatment and prevention
@@ -175,34 +178,14 @@ final_rag_chain = RunnableWithMessageHistory(
 # # operation returns dictionary with answer, context, history and input keys
 # print(operation["answer"])
 
-# def get_response(question):
-#    # call the chain to answer questions
-#     operation = final_rag_chain.invoke(
-#         {"input": "what is mpox?"},
-#         config={
-#             "configurable": {"session_id": "any"}
-#         },  # constructs a key "any" in `store`.
-#     )
-#     response = print(operation["answer"])
 
-
-
-# # initialize streamlit app
-# st.set_page_config(page_title="mpoxbot")
-# st.header("mpoxbot")
-# input = st.text_input("Input: ", key="input")
-
-
-from langchain_community.chat_message_histories import (
-    StreamlitChatMessageHistory,
-)
-
+# building the streamlit app
 history = StreamlitChatMessageHistory(key="chat_messages")
 
 history.add_user_message("hi!")
 history.add_ai_message("whats up?")
 
-# Optionally, specify your own session_state key for storing messages
+# specify session_state key for storing messages
 msgs = StreamlitChatMessageHistory(key="special_app_key")
 
 if len(msgs.messages) == 0:
@@ -211,12 +194,11 @@ if len(msgs.messages) == 0:
 for msg in msgs.messages:
     st.chat_message(msg.type).write(msg.content)
 
-if prompt := st.chat_input():
-    st.chat_message("human").write(prompt)
-
-     # call the chain to answer questions
+if input := st.chat_input():
+    st.chat_message("human").write(input)
+    # call the chain to answer questions
     operation = final_rag_chain.invoke(
-        {"input": "prompt"},
+        {"input": "input"},
         config={
             "configurable": {"session_id": "any"}
         },  # constructs a key "any" in `store`.
